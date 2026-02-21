@@ -1,0 +1,33 @@
+{
+  "name": "@apiverve/action-ssl-security",
+  "version": "0.1.0-beta",
+  "description": "Monitor SSL certificates, check TLS configuration, and detect security issues",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build index.js -o dist --license licenses.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apiverve/action-ssl-security.git"
+  },
+  "keywords": [
+    "ssl",
+    "security",
+    "tls",
+    "certificates",
+    "monitoring"
+  ],
+  "author": "APIVerve <support@apiverve.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/apiverve/action-ssl-security/issues"
+  },
+  "homepage": "https://github.com/apiverve/action-ssl-security#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.1"
+  }
+}
