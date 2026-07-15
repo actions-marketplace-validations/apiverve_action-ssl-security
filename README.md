@@ -4,7 +4,7 @@
 
 > **Beta Release** - This action is in beta. We'd love your feedback! [Open an issue](https://github.com/apiverve/action-ssl-security/issues) if you encounter any problems.
 
-[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-SSL &amp; Security-blue?logo=github)](https://github.com/marketplace/actions/apiverve-ssl-security)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-SSL_%26_Security-blue?logo=github)](https://github.com/apiverve/action-ssl-security)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **[Browse All APIs](https://apiverve.com/marketplace?utm_source=github&utm_medium=action&utm_campaign=ssl-security)** | **[Get Free API Key](https://dashboard.apiverve.com/signup?utm_source=github&utm_medium=action&utm_campaign=ssl-security)** | **[Documentation](https://docs.apiverve.com?utm_source=github&utm_medium=action&utm_campaign=ssl-security)**
@@ -24,7 +24,7 @@ This action provides access to APIVerve's SSL &amp; Security APIs directly in yo
 
 | API | Description |
 |-----|-------------|
-| `sslchecker` | SSL Checker is a simple tool for checking SSL certificates. It returns the SSL certificate details of a website. |
+| `sslchecker` | SSL Checker inspects a website&#x27;s SSL certificate. It returns the certificate details plus derived signals — whether it is currently valid or expired, how many days until it expires, whether it expires soon, and whether it is self-signed. |
 | `tlschecker` | tlschecker API |
 | `phishingcheck` | Phishing Domain Checker verifies whether a domain or URL appears in a comprehensive database of known phishing sites. Updated every 6 hours with 850,000+ active phishing domains. |
 | `ipblacklistlookup` | IP Blacklist Lookup checks whether a given IP address appears on known malicious IP blocklists. Identifies both inbound threats (attackers, spammers) and outbound threats (C2 servers, malware hosts). |
