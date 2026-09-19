@@ -1,8 +1,6 @@
-# APIVerve SSL &amp; Security Action
+# APIVerve SSL & Security Action
 
 > Monitor SSL certificates, check TLS configuration, and detect security issues
-
-> **Beta Release** - This action is in beta. We'd love your feedback! [Open an issue](https://github.com/apiverve/action-ssl-security/issues) if you encounter any problems.
 
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-SSL_%26_Security-blue?logo=github)](https://github.com/apiverve/action-ssl-security)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,7 +11,7 @@
 
 ## What does this action do?
 
-This action provides access to APIVerve's SSL &amp; Security APIs directly in your GitHub workflows:
+This action provides access to APIVerve's SSL & Security APIs directly in your GitHub workflows:
 
 - Alert before SSL certificates expire
 - Verify TLS configuration meets security standards
@@ -24,9 +22,9 @@ This action provides access to APIVerve's SSL &amp; Security APIs directly in yo
 
 | API | Description |
 |-----|-------------|
-| `sslchecker` | SSL Checker inspects a website&#x27;s SSL certificate. It returns the certificate details plus derived signals — whether it is currently valid or expired, how many days until it expires, whether it expires soon, and whether it is self-signed. |
-| `tlschecker` | tlschecker API |
-| `phishingcheck` | Phishing Domain Checker verifies whether a domain or URL appears in a comprehensive database of known phishing sites. Updated every 6 hours with 850,000+ active phishing domains. |
+| `sslchecker` | SSL Checker inspects a website's SSL certificate. It returns the certificate details plus derived signals — whether it is currently valid or expired, how many days until it expires, whether it expires soon, and whether it is self-signed. |
+| `tlscheck` | TLS Check inspects which TLS/SSL protocol versions a server supports. It probes TLS 1.0 through 1.3, reports which are negotiable, and derives a security verdict — the highest supported version, whether deprecated protocols are still exposed, and a composite risk score. |
+| `phishingcheck` | Phishing Domain Checker verifies whether a domain or URL appears in a comprehensive database of known phishing sites. Updated every 6 hours from two independent blocklists covering 570,000+ phishing domains. |
 | `ipblacklistlookup` | IP Blacklist Lookup checks whether a given IP address appears on known malicious IP blocklists. Identifies both inbound threats (attackers, spammers) and outbound threats (C2 servers, malware hosts). |
 
 ---
@@ -34,12 +32,12 @@ This action provides access to APIVerve's SSL &amp; Security APIs directly in yo
 ## Quick Start
 
 ```yaml
-- name: SSL &amp; Security
+- name: SSL & Security
   uses: apiverve/action-ssl-security@v1
   with:
     api_key: ${{ secrets.APIVERVE_KEY }}
     api: sslchecker
-    params: '{&quot;domain&quot;: &quot;example.com&quot;}'
+    params: '{"domain": "example.com"}'
 ```
 
 ---
@@ -60,7 +58,7 @@ Go to your repository **Settings** → **Secrets and variables** → **Actions**
 ### 3. Use in Workflow
 
 ```yaml
-- name: SSL &amp; Security
+- name: SSL & Security
   uses: apiverve/action-ssl-security@v1
   with:
     api_key: ${{ secrets.APIVERVE_KEY }}
@@ -70,17 +68,41 @@ Go to your repository **Settings** → **Secrets and variables** → **Actions**
 
 ---
 
+## Pass/fail checks
+
+Set `check` and the action stops being a plain API call: it evaluates the result and fails the job when something is wrong, so problems surface in CI instead of in production.
+
+### Fail before the certificate expires
+
+Warn at 30 days, fail the job at 7 days or if the certificate is invalid
+
+```yaml
+- name: Fail before the certificate expires
+  uses: apiverve/action-ssl-security@v1
+  with:
+    api_key: $
+    check: ssl-expiry
+    domain: example.com
+    warn_days: 30
+    fail_days: 7
+```
+
+---
+
 ## Inputs
 
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
 | `api_key` | Your APIVerve API key (or set `APIVERVE_API_KEY` env var) | Yes* | - |
-| `api` | API to use: `sslchecker`, `tlschecker`, `phishingcheck`, `ipblacklistlookup` | No | `sslchecker` |
+| `api` | API to use: `sslchecker`, `tlscheck`, `phishingcheck`, `ipblacklistlookup` | No | `sslchecker` |
 | `params` | JSON parameters for the API | No | `{}` |
 | `output_file` | Path to save binary output (images, PDFs) | No | - |
 | `format` | Response format: `json`, `yaml`, or `xml` | No | `json` |
 | `fail_on_error` | Fail workflow if API returns error | No | `true` |
-
+| `check` | Run a pass/fail check instead: `ssl-expiry` | No | - |
+| `domain` | Domain to check | With `check` | - |
+| `warn_days` / `fail_days` | Warn / fail when this few days remain | No | `30` / `7` |
+| `fail_on_self_signed` | Fail on a self-signed certificate | No | `false` |
 *\*API key is required but can be provided via input OR `APIVERVE_API_KEY` / `APIVERVE_KEY` environment variable.*
 
 ## Outputs
@@ -91,7 +113,8 @@ Go to your repository **Settings** → **Secrets and variables** → **Actions**
 | `data` | The `data` field from response as JSON |
 | `status` | API status (`ok` or `error`) |
 | `file` | Path to downloaded file (if `output_file` was used) |
-
+| `days_remaining` | Days until expiry (`ssl-expiry`, `domain-expiry`) |
+| `records` | Matching DNS records as JSON (`dns-record`) |
 ---
 
 ## Examples
@@ -107,7 +130,7 @@ Check SSL certificate expiration and validity
   with:
     api_key: ${{ secrets.APIVERVE_KEY }}
     api: sslchecker
-    params: '{&quot;domain&quot;: &quot;example.com&quot;}'
+    params: '{"domain": "example.com"}'
 
 - name: Use result
   run: echo "Result: ${{ steps.ssl-security-0.outputs.data }}"
@@ -123,8 +146,8 @@ Analyze TLS/SSL configuration
   uses: apiverve/action-ssl-security@v1
   with:
     api_key: ${{ secrets.APIVERVE_KEY }}
-    api: tlschecker
-    params: '{&quot;domain&quot;: &quot;example.com&quot;}'
+    api: tlscheck
+    params: '{"domain": "example.com"}'
 
 - name: Use result
   run: echo "Result: ${{ steps.ssl-security-1.outputs.data }}"
@@ -141,7 +164,7 @@ Check if a domain is flagged as malicious
   with:
     api_key: ${{ secrets.APIVERVE_KEY }}
     api: phishingcheck
-    params: '{&quot;domain&quot;: &quot;example.com&quot;}'
+    params: '{"domain": "example.com"}'
 
 - name: Use result
   run: echo "Result: ${{ steps.ssl-security-2.outputs.data }}"
@@ -153,7 +176,7 @@ Check if a domain is flagged as malicious
 ## Full Workflow Example
 
 ```yaml
-name: SSL &amp; Security Workflow
+name: SSL & Security Workflow
 
 on:
   push:
@@ -166,13 +189,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run SSL &amp; Security
+      - name: Run SSL & Security
         id: result
         uses: apiverve/action-ssl-security@v1
         with:
           api_key: ${{ secrets.APIVERVE_KEY }}
           api: sslchecker
-          params: '{&quot;domain&quot;: &quot;example.com&quot;}'
+          params: '{"domain": "example.com"}'
 
       - name: Show result
         run: |

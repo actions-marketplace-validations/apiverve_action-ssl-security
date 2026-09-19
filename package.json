@@ -1,6 +1,6 @@
 {
   "name": "@apiverve/action-ssl-security",
-  "version": "0.1.0-beta",
+  "version": "1.0.0",
   "description": "Monitor SSL certificates, check TLS configuration, and detect security issues",
   "main": "dist/index.js",
   "scripts": {
